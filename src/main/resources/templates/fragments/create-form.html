@@ -1,0 +1,49 @@
+
+
+    <form th:action="@{/tickets/save}" th:object="${ticket}" method="post">
+    <div class="mb-3">
+        <label class="form-label">Titolo</label>
+        <input type="text" th:field="*{title}" class="form-control">
+        <div class="text-danger" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></div>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Descrizione</label>
+        <textarea th:field="*{description}" class="form-control"></textarea>
+        <div class="text-danger" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></div>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Assegna a</label>
+        <select th:field="*{assignedTo.id}" class="form-select">
+            <option th:each="assignee : ${assignees}" 
+                    th:value="${assignee.id}" 
+                    th:text="${assignee.name}"></option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Categorie</label>
+        <div th:each="category : ${categories}">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" th:name="categoryIds"
+                       th:value="${category.id}" id="cat-${category.id}">
+                <label class="form-check-label" th:for="cat-${category.id}" th:text="${category.name}"></label>
+            </div>
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Priorità</label>
+        <select th:field="*{status}" class="form-select">
+            <option th:each="prio : ${priorities}" 
+                    th:value="${prio}" 
+                    th:text="${prio}"></option>
+        </select>
+    </div>
+
+    <div class="text-end">
+        <button type="submit" class="btn btn-success">Crea Ticket</button>
+    </div>
+</form>
+</div>

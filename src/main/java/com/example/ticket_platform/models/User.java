@@ -214,6 +214,16 @@ public class User {
         this.isOnline = isOnline;
     }
 
+    public boolean hasRole(String roleName) {
+    for (Role role : roles) {
+        if (role.getName().equalsIgnoreCase(roleName)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+
    
 
 

@@ -1,0 +1,94 @@
+<div th:fragment="ticketListFragment(tickets, assignees)">
+        <section id="elenco-ticket" class="container my-5">
+            <div class="card shadow">
+                <div class="card-body">
+                    <h2 class="h4 mb-4 text-primary">Elenco Ticket</h2>
+
+                    <!-- Barra di ricerca e filtri -->
+                    <div class="row mb-4">
+                        <div class="col-md-4 mb-2">
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-search"></i></span>
+                                <input type="text" class="form-control" placeholder="Cerca ticket..." id="ticket-search">
+                            </div>
+                        </div>
+                        <div class="col-md-2 mb-2">
+                            <select class="form-select" id="filter-status">
+                                <option value="">Stato</option>
+                                <option value="open">Aperto</option>
+                                <option value="pending">In attesa</option>
+                                <option value="closed">Chiuso</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2 mb-2">
+                            <select class="form-select" id="filter-priority">
+                                <option value="">Priorità</option>
+                                <option value="high">Alta</option>
+                                <option value="medium">Media</option>
+                                <option value="low">Bassa</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-2">
+                            <select class="form-select" id="filter-assignee">
+                                <option value="">Assegnatario</option>
+                                <option th:each="assignee : ${assignees}" th:value="${assignee.id}" th:text="${assignee.name}"></option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Tabella ticket -->
+                    <div class="table-responsive">
+                        <table class="table table-striped align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Titolo</th>
+                                    <th>Stato</th>
+                                    <th>Priorità</th>
+                                    <th>Assegnatario</th>
+                                    <th>Data</th>
+                                    <th>Azioni</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="ticket : ${tickets}">
+                                    <td th:text="'#' + ${ticket.id}"></td>
+                                    <td th:text="${ticket.title}"></td>
+                                    <td>
+                                        <span class="badge"
+                                              th:classappend="${ticket.status} == 'Aperto' ? 'bg-success' :
+                                                              ${ticket.status} == 'In attesa' ? 'bg-warning' :
+                                                              'bg-secondary'"
+                                              th:text="${ticket.status}"></span>
+                                    </td>
+                                    <td>
+                                        <span class="badge"
+                                              th:classappend="${ticket.priority} == 'Alta' ? 'bg-danger' :
+                                                              ${ticket.priority} == 'Media' ? 'bg-warning' :
+                                                              'bg-info'"
+                                              th:text="${ticket.priority}"></span>
+                                    </td>
+                                    <td th:text="${ticket.assignee.name}"></td>
+                                    <td th:text="${#dates.format(ticket.date, 'dd/MM/yyyy')}"></td>
+                                    <td>
+                                        <div class="d-flex gap-2">
+                                            <a th:href="@{/tickets/view/{id}(id=${ticket.id})}" class="btn btn-sm btn-outline-primary" title="Vedi">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                            <a th:href="@{/tickets/reassign/{id}(id=${ticket.id})}" class="btn btn-sm btn-outline-secondary" title="Riassegna">
+                                                <i class="bi bi-person-lines-fill"></i>
+                                            </a>
+                                            <a th:href="@{/tickets/update-status/{id}(id=${ticket.id})}" class="btn btn-sm btn-outline-success" title="Aggiorna stato">
+                                                <i class="bi bi-arrow-repeat"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+    </div>

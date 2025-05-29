@@ -261,6 +261,23 @@ public Note addNoteToTicket(Long ticketId, Long userId, String content) {
         // Cerca i ticket usando la stringa del titolo
         return ticketRepository.findByTitleContainingIgnoreCase(title);
     }
+
+      public void save(Ticket ticket) {
+        ticketRepository.save(ticket);
+    }
+
+       public List<Ticket> findAll() {
+        return ticketRepository.findAll();
+    }
+
+     public List<Ticket> findByAssignedTo(User user) {
+        return ticketRepository.findByAssignedTo(user);
+     }
+
+    public Optional<Ticket> findById(Long id) {
+        return ticketRepository.findById(id);
+    
+    }
 }
 
 

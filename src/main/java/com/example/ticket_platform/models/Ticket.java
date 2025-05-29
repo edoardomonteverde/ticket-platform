@@ -6,6 +6,8 @@ import java.util.List;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -45,6 +47,10 @@ public class Ticket {
 
     @Column(nullable = true)
     private LocalDateTime closedAt;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private TicketPriority priority;
 
    // Relazione ManyToOne con User (Admin o Client) - L'utente che ha creato il ticket
     @ManyToOne
@@ -161,6 +167,14 @@ public class Ticket {
     public void setTicketCategories(List<TicketCategory> ticketCategories) {
         this.ticketCategories = ticketCategories;
     } 
+
+    public TicketPriority getPriority() {
+        return priority;
+    }
+
+    public void setPriority(TicketPriority priority) {
+        this.priority = priority;
+    }
 
  
    

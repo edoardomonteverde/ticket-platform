@@ -1,0 +1,47 @@
+ body {
+            background-color: #f5f7fa;
+            font-family: 'Inter', sans-serif;
+        }
+        .sidebar {
+            transition: all 0.3s ease;
+        }
+        .ghost-mode {
+            opacity: 0.6;
+            filter: grayscale(100%);
+        }
+        .ticket-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 
+                        0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .priority-high {
+            background-color: #FEE2E2;
+            color: #DC2626;
+        }
+        .priority-medium {
+            background-color: #FEF3C7;
+            color: #D97706;
+        }
+        .priority-low {
+            background-color: #DBEAFE;
+            color: #2563EB;
+        }
+        .status-open {
+            background-color: #ECFDF5;
+            color: #059669;
+        }
+        .status-pending {
+            background-color: #FEF3C7;
+            color: #D97706;
+        }
+        .status-closed {
+            background-color: #F3F4F6;
+            color: #4B5563;
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }

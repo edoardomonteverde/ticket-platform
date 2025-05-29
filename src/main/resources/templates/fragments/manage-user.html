@@ -1,0 +1,91 @@
+<div th:fragment="sidebar" class="container mt-4" sec:authorize="hasAuthority('ADMIN')">
+    <div class="row">
+        <!-- Form creazione utente -->
+        <div class="col-md-4">
+            <div class="card shadow mb-4">
+                <div class="card-header">
+                    <h4 class="mb-0">Crea Nuovo Utente</h4>
+                </div>
+                <div class="card-body">
+                    <form th:action="@{/admin/users/create}" method="post">
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Nome Utente</label>
+                            <input type="text" class="form-control" id="username" name="username" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password Temporanea</label>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="roles" class="form-label">Ruoli</label>
+                            <select class="form-select" id="roles" name="roleIds" multiple>
+                                <option th:each="role : ${allRoles}" th:value="${role.id}" th:text="${role.name}"></option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Crea Utente</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Elenco utenti -->
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">Elenco Utenti</h4>
+                    <input type="text" class="form-control w-50" placeholder="Cerca utenti..." />
+                </div>
+                <div class="card-body table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Nome Utente</th>
+                                <th>Email</th>
+                                <th>Ruoli</th>
+                                <th>Stato</th>
+                                <th>Azioni</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="user : ${users}">
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="rounded-circle bg-primary text-white d-flex justify-content-center align-items-center" style="width: 35px; height: 35px;">
+                                            <span th:text="${#strings.substring(user.username, 0, 2).toUpperCase()}"></span>
+                                        </div>
+                                        <span class="ms-2" th:text="${user.username}"></span>
+                                    </div>
+                                </td>
+                                <td th:text="${user.email}"></td>
+                                <td>
+                                    <span th:each="role : ${user.roles}" class="badge bg-info me-1" th:text="${role.name}"></span>
+                                </td>
+                                <td>
+                                    <span th:if="${user.isOnline}" class="badge bg-success">Attivo</span>
+                                    <span th:if="${!user.isOnline}" class="badge bg-secondary">Offline</span>
+                                </td>
+                                <td>
+                                    <div class="d-flex gap-2">
+                                        <a th:href="@{/admin/users/edit/{id}(id=${user.id})}" class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <a th:href="@{/admin/users/delete/{id}(id=${user.id})}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Sei sicuro di voler eliminare questo utente?');">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div th:if="${users.size() == 0}" class="alert alert-info mt-3">
+                        Nessun utente trovato.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

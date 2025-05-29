@@ -1,0 +1,114 @@
+<div th:fragment="ticket-details" class="container mt-4"
+     xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+    <div class="card shadow">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h2 class="h4 mb-0">Dettaglio Ticket #<span th:text="${ticket.id}"></span></h2>
+            <a href="/tickets" class="btn btn-secondary">
+                <i class="fas fa-arrow-left me-2"></i> Torna all'elenco
+            </a>
+        </div>
+
+        <div class="card-body row">
+            <div class="col-md-8">
+                <h3 class="h5" th:text="${ticket.title}"></h3>
+                <p th:text="${ticket.description}"></p>
+                <div class="mb-3">
+                    <span class="badge bg-success" th:if="${ticket.status == 'APERTO'}">Aperto</span>
+                    <span class="badge bg-warning text-dark" th:if="${ticket.status == 'IN ATTESA'}">In attesa</span>
+                    <span class="badge bg-secondary" th:if="${ticket.status == 'CHIUSO'}">Chiuso</span>
+                    <span class="badge bg-danger" th:if="${ticket.priority == 'ALTA'}">Alta Priorità</span>
+                    <span class="badge bg-warning text-dark" th:if="${ticket.priority == 'MEDIA'}">Media Priorità</span>
+                    <span class="badge bg-info text-dark" th:if="${ticket.priority == 'BASSA'}">Bassa Priorità</span>
+                    <span class="badge bg-light text-dark" th:each="cat : ${ticket.ticketCategories}" th:text="${cat.name}"></span>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>Creato il:</span>
+                        <span th:text="${#dates.format(ticket.createdAt, 'dd/MM/yyyy')}"></span>
+                    </li>
+
+                    <!-- Mostra solo a OPERATOR e ADMIN -->
+                    <li sec:authorize="hasAnyRole('OPERATOR', 'ADMIN')" class="list-group-item d-flex justify-content-between">
+                        <span>Aggiornato il:</span>
+                        <span th:text="${#dates.format(ticket.updatedAt, 'dd/MM/yyyy')}"></span>
+                    </li>
+
+                    <li sec:authorize="hasAnyRole('OPERATOR', 'ADMIN')" class="list-group-item d-flex justify-content-between">
+                        <span>Assegnato a:</span>
+                        <span th:text="${ticket.assignedTo != null ? ticket.assignedTo.username : 'Non assegnato'}"></span>
+                    </li>
+
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>Creato da:</span>
+                        <span th:text="${ticket.createdBy.username}"></span>
+                    </li>
+                </ul>
+
+                <!-- Solo OPERATOR e ADMIN possono aggiornare stato -->
+                <div sec:authorize="hasAnyRole('OPERATOR', 'ADMIN')" class="d-flex mt-3 gap-2">
+                    <form th:action="@{/tickets/{id}/update-status(id=${ticket.id})}" method="post" class="d-flex w-100">
+                        <select name="status" class="form-select me-2">
+                            <option th:each="statusOption : ${statusList}" 
+                                    th:value="${statusOption}" 
+                                    th:text="${statusOption}" 
+                                    th:selected="${ticket.status == statusOption}">
+                            </option>
+                        </select>
+                        <button type="submit" class="btn btn-primary">Aggiorna Stato</button>
+                    </form>
+                </div>
+
+                <!-- Solo ADMIN può riassegnare -->
+                <div sec:authorize="hasRole('ADMIN')" class="d-flex mt-3 gap-2">
+                    <form th:action="@{/tickets/{id}/reassign(id=${ticket.id})}" method="post" class="d-flex w-100">
+                        <select name="operatorId" class="form-select me-2">
+                            <option th:each="op : ${operatorList}" 
+                                    th:value="${op.user.id}" 
+                                    th:text="${op.user.username}" 
+                                    th:selected="${ticket.assignedTo != null && ticket.assignedTo.id == op.user.id}">
+                            </option>
+                        </select>
+                        <button type="submit" class="btn btn-secondary">Riassegna</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Aggiungi Nota: solo OPERATOR e ADMIN -->
+        <div sec:authorize="hasAnyRole('OPERATOR', 'ADMIN')" class="card-footer">
+            <h4 class="h6">Aggiungi Nota</h4>
+            <form th:action="@{/tickets/{id}/add-note(id=${ticket.id})}" method="post">
+                <div class="mb-2">
+                    <textarea name="noteContent" class="form-control" rows="3" placeholder="Inserisci una nuova nota..."></textarea>
+                </div>
+                <div class="d-flex justify-content-end">
+                    <button type="submit" class="btn btn-success">Aggiungi Nota</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Cronologia Note -->
+    <div sec:authorize="hasAnyAuthority('OPERATOR', 'ADMIN')" class="mt-4">
+        <h4 class="h5">Cronologia Note</h4>
+       <div th:if="${ticket.notes.size() > 0}">
+    <div class="list-group">
+        <div th:each="note : ${ticket.notes}" class="list-group-item">
+            <div class="d-flex justify-content-between">
+                <div>
+                    <strong th:text="${note.user.username}"></strong>
+                    <small class="text-muted ms-2" th:text="${#dates.format(note.createdAt, 'dd/MM/yyyy HH:mm')}"></small>
+                </div>
+            </div>
+            <p class="mt-2 mb-0" th:text="${note.content}"></p>
+        </div>
+    </div>
+</div>
+        <div th:if="${ticket.ticketLogs.size() == 0}" class="alert alert-info mt-3">
+            Nessuna nota disponibile.
+        </div>
+    </div>
+</div>

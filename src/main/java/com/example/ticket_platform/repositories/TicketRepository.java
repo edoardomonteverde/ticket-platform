@@ -44,5 +44,9 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
 
     // Metodo per cercare i ticket per stringa nel titolo (caso-insensibile)
     List<Ticket> findByTitleContainingIgnoreCase(String title);
+
+     List<Ticket> findByTicketCategoriesName(String category);
+
+
 }
 

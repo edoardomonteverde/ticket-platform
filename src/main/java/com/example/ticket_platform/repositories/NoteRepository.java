@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.example.ticket_platform.models.Note;
+import com.example.ticket_platform.models.Ticket;
 
 @Repository
 public interface NoteRepository extends JpaRepository<Note, Long> {
@@ -22,4 +23,6 @@ public interface NoteRepository extends JpaRepository<Note, Long> {
 
     // Trova tutte le note associate a un determinato ticket, ordinate per data (dal più recente)
     List<Note> findByTicketIdOrderByCreatedAtDesc(Long ticketId);
+
+    List<Note> findByTicketOrderByCreatedAtDesc(Ticket ticket);
 }

@@ -1,7 +1,5 @@
 package com.example.ticket_platform.security;
 
-import java.util.Optional;
-
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -10,7 +8,27 @@ import org.springframework.stereotype.Service;
 import com.example.ticket_platform.models.User;
 import com.example.ticket_platform.repositories.UserRepository;
 
-    @Service
+
+@Service
+public class DatabaseUserDetailsService implements UserDetailsService {
+
+    private final UserRepository userRepository;
+
+    public DatabaseUserDetailsService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userRepository.findByUsername(username)
+            .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+
+        return new DatabaseUserDetails(user);
+    }
+}
+
+
+    /* @Service
 public class DatabaseUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;
@@ -32,4 +50,4 @@ public class DatabaseUserDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException("Username not found: " + username);  // Se l'utente non esiste
         }
     }
-}
+} */
